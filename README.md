@@ -1,16 +1,51 @@
-# React + Vite
+# Інформаційно-управляюча система мультимодальних перевезень
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Клієнт-серверний прототип дипломного проєкту (ІС-23, КПІ).
 
-Currently, two official plugins are available:
+- **Frontend:** React + Vite + Bootstrap (`/src`)
+- **Backend:** FastAPI + SQLite + SQLAlchemy (`/backend`)
+- **БД:** SQLite (`backend/data/multimodal.db`) — модель за ER-діаграмою з ПЗ
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Архітектура
 
-## React Compiler
+```
+Браузер (React)  --REST/JSON-->  FastAPI API  -->  SQLite
+                     WebSocket (моніторинг)
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Серверна частина:
+- авторизація (JWT + bcrypt)
+- CRUD замовлень (Користувач → Замовлення → Маршрут → Вантаж)
+- IoT-імітація (опитування кожні 2.4 с)
+- порогова модель аномалій (табл. 6.1, кресленик Д4)
 
-## Expanding the ESLint configuration
+## Запуск
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Backend (Python 3.9+)
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+API: http://127.0.0.1:8000/api/health  
+Swagger: http://127.0.0.1:8000/docs
+
+### 2. Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+UI: http://localhost:5173
+
+## Демо-сценарій
+
+1. Зареєструватися / увійти
+2. Створити замовлення на перевезення
+3. Увімкнути імітацію сенсорів на дашборді або в моніторингу
+4. Переглянути оновлення показників і аномалій з сервера

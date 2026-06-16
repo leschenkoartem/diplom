@@ -3,7 +3,11 @@ import { useState, useEffect, useCallback } from 'react';
 const STORAGE_KEY = 'anomalySimulationEnabled';
 const EVENT_NAME = 'anomaly-simulation-toggle';
 
-const readEnabled = () => localStorage.getItem(STORAGE_KEY) === 'true';
+const readEnabled = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored === null) return true;
+  return stored === 'true';
+};
 
 export const useAnomalySimulation = () => {
   const [enabled, setEnabled] = useState(readEnabled);
